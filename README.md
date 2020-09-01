@@ -1,5 +1,5 @@
 # Terraform used to create resource on AWS
- !(https://github.com/vrledu/p-terraform-web-app/blob/master/p-web-app-design.jpg)
+ ![p-terraform-web-app](https://github.com/vrledu/p-terraform-web-app/blob/master/p-web-app-design.jpg)
 
 ## Prerequisites
 - Terraform v0.12.6
