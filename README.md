@@ -16,7 +16,7 @@ These types of resources are supported:
 - Elastic Compute Cloud (EC2)
    - Launch configuration
    - Autoscaling Group
-   - Elastic Block Storage (EBS) 
+   - Elastic Block Storage (EBS)
 
 - Relational Database Service (RDS)
    - DB subnet group
@@ -64,13 +64,13 @@ git clone git@github.com:kawinpromsopa/fiverr-terraform-web-app.git
 ##
 ## AWS Region
 ##
-region = "ap-southeast-1"
+region = "eu-west-2"
 
 ##
 ## VPC
 ##
 vpc_cidr        = "10.10.0.0/16"
-azs             = ["ap-southeast-1a", "ap-southeast-1b", "ap-southeast-1c"]
+azs             = ["eu-west-2a", "eu-west-2b", "eu-west-2c"]
 public_subnets  = ["10.10.10.0/24", "10.10.20.0/24", "10.10.30.0/24"]
 private_subnets = ["10.10.11.0/24", "10.10.21.0/24", "10.10.31.0/24"]
 
@@ -123,7 +123,7 @@ aws_access_key_id=exmaple-access-key
 aws_secret_access_key=example-secret-key
 
 $ terraform workspace new non-production
-$ terraform workspace select non-production 
+$ terraform workspace select non-production
 ```
 NOTE IMPORTANT: The terraform workspace MUST be matched which named an AWS Profile Environment.
 
@@ -145,4 +145,61 @@ NOTE: The terraform will put the outputs resource information such as `elb_dns_n
 
 ```
 ssh -i "key_pair_name.pem" ubuntu@<INSTANCE_IP_ADDRESS>
+```
+
+## How to access web-ui and verify Data
+
+a. First, we need to connect app-server instance using ssh and need to connect to rds db_instance_endpoint inorder to create database and required table ie,
+```
+i. ssh -i <<key_pair>> ubuntu@<<ec2-instance-dns or pub ip>>
+ii. Install mysql-server, this is required for connecting to database.
+apt-get install mysql-server
+iii. mysql -h <<rds-end-point>> -u admin -p
+iv. once connected, should see mysql> and then execute below sql queries
+create database timestampapi;
+use timestampapi;
+CREATE TABLE `timestamp` (
+        `id` int(11) NOT NULL,
+        `timestamp` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+v. show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| innodb             |
+| mysql              |
+| performance_schema |
+| sys                |
+| timestampapi       |
++--------------------+
+
+b. open http://<<elb_dns_name>>/timestampapi in the browser and enter date timestamp and click submit. should see success popoup
+
+c. Verify db by running query
+select * from timestamp;
++----+---------------------+
+| id | timestamp           |
++----+---------------------+
+|  0 | 2020-09-01 14:01:00 |
++----+---------------------+
+1 row in set (0.01 sec)
+```
+## How to insert date from api call
+a. from terminal, run below command ie,
+```
+curl -X POST -H "Content-Type: application/json" -d '{"timestamp":"2020-09-01 15:10:10"}' <<elb-dns-name>>/timestampapi/saveTimeStamp.php
+```
+should see "true" as output
+
+b. Again verify db by executing above query ie,
+```
+mysql> select * from timestamp;
++----+---------------------+
+| id | timestamp           |
++----+---------------------+
+|  0 | 2020-09-01 14:01:00 |
+|  0 | 2020-09-01 15:10:10 |
++----+---------------------+
+2 rows in set (0.00 sec)
 ```
