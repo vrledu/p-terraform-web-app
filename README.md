@@ -55,7 +55,7 @@ AWS Console => EC2 => NETWORK & SECURITY => Key Pairs
 - Clone this repository and go to into directory
 
 ```
-git clone git@github.com:kawinpromsopa/fiverr-terraform-web-app.git
+git clone git@github.com:vrledu/p-terraform-web-app.git
 ```
 
 - Update the new values for creates resource into `workspace/non-production.tfvars`
