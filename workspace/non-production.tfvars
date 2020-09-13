@@ -14,15 +14,9 @@ private_subnets = ["10.10.11.0/24", "10.10.21.0/24", "10.10.31.0/24"]
 ##
 ## EC2, Launch Configuration and Autoscaling Group
 ##
-<<<<<<< HEAD
 instance_name = "webapp"
 instance_type = "t3.micro"
 key_name      = "vijay_keypair"
-=======
-instance_name = "web-application"
-instance_type = "t3.medium"
-key_name      = "DevOps"
->>>>>>> 312bc7c5bc9f76aece7ac52a99896a887717d701
 ebs_volume_size = "20"
 ebs_volume_type = "gp2"
 root_volume_size = "20"
